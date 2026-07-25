@@ -1,0 +1,20 @@
+[project]
+name = "movie-preserver"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "basicsr",
+    "curl-cffi>=0.15.0",
+    "ffmpeg-python>=0.2.0",
+    "opencv-python>=5.0.0.93",
+    "playwright>=1.61.0",
+    "torch>=2.13.0",
+    "torchaudio>=2.11.0",
+    "torchvision>=0.28.0",
+    "yt-dlp>=2026.7.4",
+]
+
+[tool.uv.sources]
+basicsr = { git = "https://github.com/xinntao/BasicSR.git" }
