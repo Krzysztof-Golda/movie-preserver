@@ -1,9 +1,10 @@
+import gfpgan
 import ffmpeg
 import upscaler
 import os
 import shutil
 import subprocess
-from upscaler import initialize_upscaler, upscale_image
+from upscaler import initialize_upscaler, upscale_image, initialize_face_enhancer
 
 def get_video_fps(video_path: str) -> str:
     cmd = [
@@ -44,8 +45,15 @@ def process_video(input_video: str, output_video: str, model_path: str):
         subprocess.run(['ffmpeg', '-y', '-i', input_video, f"{frames_in_dir}/frame_%08d.png"], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
         # Inicjacja AI upscaling
+        gfpgan_path = "models/GFPGANv1.4.pth"
         print("[*] Inicjalizacja modelu AI na procesorze graficznym...")
         upscaler = initialize_upscaler(model_path=model_path, scale=4)
+        if os.path.exists(gfpgan_path):
+            print("[*] Wykryto model GFPGAN! Inicjalizuję fotorealistyczną rekonstrukcję twarzy...")
+            face_enhancer = initialize_face_enhancer(gfpgan_path, upscaler)
+        else:
+            print("[-] Brak modelu GFPGAN (GFPGANv1.4.pth). Twarze nie będą dodatkowo wyostrzane.")
+            face_enhancer = None
 
         frames = sorted(os.listdir(frames_in_dir))
         total_frames = len(frames)
@@ -55,7 +63,7 @@ def process_video(input_video: str, output_video: str, model_path: str):
             in_path = os.path.join(frames_in_dir, frame_name)
             out_path = os.path.join(frames_out_dir, frame_name)
 
-            upscale_image(upscaler, in_path, out_path)
+            upscale_image(upscaler, in_path, out_path, face_enhancer)
 
             # Postęp w konsoli
             if idx % 50 == 0 or idx == total_frames:
@@ -89,4 +97,4 @@ def process_video(input_video: str, output_video: str, model_path: str):
 # Blok testowy
 if __name__ == "__main__":
     # Upewnij się, że masz plik testowy i pobrany model RealESRGAN_x4plus.pth
-    process_video("test-1.mp4", "gotowy_4k.mp4", "models/RealESRGAN_x4plus.pth")
+    process_video("test-1.mp4", "gotowy_4k.mp4", "models/4x-UltraSharp.pth")
