@@ -16,3 +16,6 @@ youtube/
 *.pth
 temp_workspace/
 __pycache__/
+temp_frames_in/
+temp_frames_out
+*.txt

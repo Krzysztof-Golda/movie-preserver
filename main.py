@@ -3,6 +3,7 @@ import os
 from youtube_downloader import youtube_download
 from hls_downloader import download_other_players
 from vider_downloader import download_video
+from pipeline import run_batch_upscaling
 
 def load_links(file_name='urls.txt'):
     if not os.path.exists(file_name):
@@ -13,14 +14,17 @@ def load_links(file_name='urls.txt'):
         return [line.strip() for line in file if line.strip() and not line.startswith('#')]
 
 if __name__ == "__main__":
-    print("=== MODULARNY DOWNLOADER WIDEO/AUDIO ===")
+    print("\n" + "="*40)
+    print("🎬 MOVIE PRESERVER AI - MENU GŁÓWNE")
+    print("="*40)
     print("1. Standardowe linki (YouTube, Vimeo itp.) -> Pobierz jako WIDEO")
     print("2. Standardowe linki (YouTube, Vimeo itp.) -> Pobierz jako AUDIO (MP3)")
     print("3. Trudne odtwarzacze (np. LuluStream)   -> Przechwytuj i pobierz WIDEO")
     print("4. Vider -> Przechwytuj i pobierz WIDEO")
+    print("5. Rozpocznij masowe upscalowanie")
     print("Q. Wyjdź z aplikacji")
 
-    choice = input("\nWybierz tryb pracy (1/2/3/4) lub q, aby wyjść: ").strip()
+    choice = input("\nWybierz tryb pracy (1/2/3/4/5) lub q, aby wyjść: ").strip()
 
     linki = load_links('urls.txt')
 
@@ -37,10 +41,13 @@ if __name__ == "__main__":
         elif choice == '2':
             youtube_download(link, only_audio=True)
         elif choice == '3':
-            download_other_players(link, f'film_{num}')
+            download_other_players(link, f'Ojciec Chrzestny III')
         elif choice == '4':
             download_video(link, f'vider_film_{num}', headless=False)
             num += 1
+        elif choice == '5':
+            run_batch_upscaling()
+            continue
         elif choice == 'q':
             print("Zakończono działanie programu.")
             break
